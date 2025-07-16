@@ -12,22 +12,14 @@
       margin: 10px;
       transition: background-color 0.3s, color 0.3s;
     }
-
-    h2 {
-      text-align: center;
-    }
-
-    .table-container {
-      overflow-x: auto;
-    }
-
+    h2 { text-align: center; }
+    .table-container { overflow-x: auto; }
     table {
       border-collapse: collapse;
       width: 100%;
       min-width: 800px;
       margin-top: 20px;
     }
-
     th {
       background-color: #4A90E2;
       color: white;
@@ -35,15 +27,12 @@
       padding: 6px;
       text-align: center;
     }
-
     td {
       border: 1px solid #000;
       padding: 6px;
       text-align: center;
     }
-
-    input[type="number"],
-    input[type="date"] {
+    input[type="number"], input[type="date"] {
       width: 100%;
       box-sizing: border-box;
       padding: 5px;
@@ -51,36 +40,29 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
-    input[type="number"]:focus,
-    input[type="date"]:focus {
+    input[type="number"]:focus, input[type="date"]:focus {
       border-color: #4A90E2;
       outline: none;
       background-color: #f0f8ff;
     }
-
     .footer-branding {
       margin-top: 20px;
       font-weight: bold;
       text-align: center;
       font-size: 16px;
     }
-
     .friday-row {
       background-color: #ff9999 !important;
     }
-
     .dark-mode {
       background-color: #1c1c1c;
       color: #e0e0e0;
     }
-
     .dark-mode input {
       background-color: #2a2a2a;
       color: #fff;
       border: 1px solid #555;
     }
-
     .summary-cards {
       display: flex;
       justify-content: center;
@@ -88,7 +70,6 @@
       margin-top: 30px;
       flex-wrap: wrap;
     }
-
     .summary-card {
       background-color: #fff59d;
       border: 2px solid #fbc02d;
@@ -104,46 +85,31 @@
       justify-content: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
-
     @media screen and (max-width: 600px) {
-      table {
-        font-size: 12px;
-      }
-
-      input[type="number"],
-      input[type="date"] {
+      table { font-size: 12px; }
+      input[type="number"], input[type="date"] {
         font-size: 12px;
         padding: 4px;
       }
-
-      h2 {
-        font-size: 18px;
-      }
-
-      .footer-branding {
-        font-size: 14px;
-      }
-
+      h2 { font-size: 18px; }
+      .footer-branding { font-size: 14px; }
       .summary-card {
         width: 100%;
         font-size: 16px;
         height: 100px;
       }
     }
-
     .menu-container {
       position: absolute;
       top: 10px;
       right: 10px;
     }
-
     .menu-container button {
       font-size: 20px;
       background: none;
       border: none;
       cursor: pointer;
     }
-
     .menu-options {
       display: none;
       position: absolute;
@@ -153,8 +119,8 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       border-radius: 6px;
       overflow: hidden;
+      z-index: 999;
     }
-
     .menu-options button {
       display: block;
       width: 100%;
@@ -164,17 +130,14 @@
       cursor: pointer;
       text-align: left;
     }
-
     .menu-options button:hover {
       background-color: #f0f0f0;
     }
-
     .dark-mode .menu-options {
       background-color: #333;
       color: white;
       border-color: #444;
     }
-
     .dark-mode .menu-options button:hover {
       background-color: #444;
     }
@@ -186,6 +149,7 @@
     <div id="menuOptions" class="menu-options">
       <button onclick="toggleDarkMode()">🌙 ডার্ক মোড</button>
       <button onclick="resetAllData()">🔁 Reset All</button>
+      <button onclick="window.open('https://www.appcreator24.com/app3577069-gzva0d', '_blank')">📱 Download App for Save Info</button>
     </div>
   </div>
 
@@ -267,7 +231,7 @@
       const nextCarry = i < rowCount - 1 ? document.getElementById(`carry-${i + 1}`).value : "";
 
       if (!document.getElementById(`carry-${i}`).value && prevCarry && nextCarry) {
-        row.style.backgroundColor = "#c8f7c5"; // green for empty between
+        row.style.backgroundColor = "#c8f7c5";
       } else {
         if (day !== "Friday") row.style.backgroundColor = "";
       }
@@ -329,6 +293,23 @@
       }
     }
 
+    function handleMultiPaste(e, startIndex) {
+      e.preventDefault();
+      const pasteData = e.clipboardData.getData('text');
+      const values = pasteData
+        .split(/[\s,]+/)
+        .map(v => v.trim())
+        .filter(v => v !== "");
+
+      for (let offset = 0; offset < values.length; offset++) {
+        const val = parseInt(values[offset]);
+        if (!isNaN(val) && startIndex + offset < rowCount) {
+          document.getElementById(`success-${startIndex + offset}`).value = val;
+          calculateRow(startIndex + offset);
+        }
+      }
+    }
+
     window.onload = () => {
       const b = document.getElementById("tableBody");
       for (let i = 0; i < rowCount; i++) {
@@ -337,9 +318,9 @@
         row.innerHTML = `
           <td><input type="date" id="date-${i}" onchange="calculateRow(${i})"/></td>
           <td id="day-${i}"></td>
-          <td><input type="number" step="1" id="carry-${i}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
-          <td><input type="number" step="1" id="success-${i}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
-          <td><input type="number" step="1" id="rp-${i}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
+          <td><input type="number" id="carry-${i}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
+          <td><input type="number" id="success-${i}" onpaste="handleMultiPaste(event, ${i})" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
+          <td><input type="number" id="rp-${i}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onchange="calculateRow(${i})"/></td>
           <td id="amount-${i}">0</td>
           <td id="faild-${i}">0</td>
           <td id="percent-${i}">0%</td>`;

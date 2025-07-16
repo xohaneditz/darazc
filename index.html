@@ -186,6 +186,7 @@
     <div id="menuOptions" class="menu-options">
       <button onclick="toggleDarkMode()">🌙 ডার্ক মোড</button>
       <button onclick="resetAllData()">🔁 Reset All</button>
+      <button onclick="window.open('https://www.appcreator24.com/app3577069-gzva0d', '_blank')">⬇️ Download App for Save Information</button>
     </div>
   </div>
 
@@ -267,7 +268,7 @@
       const nextCarry = i < rowCount - 1 ? document.getElementById(`carry-${i + 1}`).value : "";
 
       if (!document.getElementById(`carry-${i}`).value && prevCarry && nextCarry) {
-        row.style.backgroundColor = "#c8f7c5"; // green for empty between
+        row.style.backgroundColor = "#c8f7c5";
       } else {
         if (day !== "Friday") row.style.backgroundColor = "";
       }
@@ -329,6 +330,19 @@
       }
     }
 
+    function handleMultiPaste(e, startIndex) {
+      e.preventDefault();
+      const pasteData = e.clipboardData.getData('text');
+      const values = pasteData.trim().split(/\s+|\n/);
+      for (let offset = 0; offset < values.length; offset++) {
+        const val = parseInt(values[offset]);
+        if (!isNaN(val) && startIndex + offset < rowCount) {
+          document.getElementById(`success-${startIndex + offset}`).value = val;
+          calculateRow(startIndex + offset);
+        }
+      }
+    }
+
     window.onload = () => {
       const b = document.getElementById("tableBody");
       for (let i = 0; i < rowCount; i++) {
@@ -344,6 +358,9 @@
           <td id="faild-${i}">0</td>
           <td id="percent-${i}">0%</td>`;
         b.appendChild(row);
+
+        // Add paste event for success input
+        document.getElementById(`success-${i}`).addEventListener("paste", (e) => handleMultiPaste(e, i));
       }
       loadData();
     };
